@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* VS Code Dark Theme Base Styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-vscode-bg text-vscode-text;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-vscode-sidebar;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-vscode-border rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-vscode-muted;
+  }
+
+  /* Focus styles */
+  *:focus {
+    @apply outline-none ring-2 ring-vscode-accent ring-offset-2 ring-offset-vscode-bg;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-vscode-active text-vscode-text;
+  }
+}
+
+/* Component styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-vscode-accent text-white hover:bg-blue-600 focus:ring-blue-500;
+  }
+
+  .btn-secondary {
+    @apply bg-vscode-sidebar text-vscode-text border border-vscode-border hover:bg-vscode-hover;
+  }
+
+  .btn-danger {
+    @apply bg-semantic-error text-white hover:bg-red-600 focus:ring-red-500;
+  }
+
+  .btn-ghost {
+    @apply text-vscode-text hover:bg-vscode-hover focus:ring-vscode-accent;
+  }
+
+  .input {
+    @apply block w-full px-3 py-2 border border-vscode-border rounded-md shadow-sm bg-vscode-sidebar text-vscode-text placeholder-vscode-muted focus:outline-none focus:ring-2 focus:ring-vscode-accent focus:border-vscode-accent disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .sidebar {
+    @apply bg-vscode-sidebar border-r border-vscode-border;
+  }
+
+  .tabs {
+    @apply bg-vscode-tabs border-b border-vscode-border;
+  }
+} 

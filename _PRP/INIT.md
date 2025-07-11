@@ -1,200 +1,255 @@
-# Project Overview: Scratch - Custom Desktop Text Editor
+# Scratch Editor - Development Cycle & Rules (Source of Truth)
 
-## IMPORTANT: Implementation Entry Point
+## IMPORTANT: Development Entry Point
 
-**This file (INIT.md) is the primary entry point for implementing the Scratch editor project.**
+**This file (INIT.md) is the primary source of truth for development rules and cycle.**
 
-### Usage Instructions for Agents:
-1. **Read this file first** - Understand the project goals, requirements, and approach
-2. **Reference specific PRP files** - Use the file references below to get detailed implementation steps
-3. **Follow the implementation sequence** - Start with PRP-00 and proceed sequentially
-4. **Re-read this file** - Review this file at the start of each new implementation phase
-5. **Check for updates** - This file may be updated as the project evolves
+## Development Cycle Rules
 
-### File References for Implementation Details:
+### 1. Always Read INIT.md First
+- **Purpose**: Understand best practices, rules, and development standards
+- **Frequency**: Read at the start of each development session
+- **Scope**: Covers development cycle, quality standards, and project rules
+- **Mandatory**: Agents MUST read this before any work
 
-#### Reference Documents (Read First):
-- **PRP-REF-UI-Testing-Analysis.md** - Unified UI/styling and testing strategy
-- **PRP-Implementation-Sequence.md** - Detailed implementation order and guidelines
+### 2. Read PLANNING.md for Feature Understanding
+- **Purpose**: Understand the feature to be implemented
+- **Content**: Non-technical, user-facing feature descriptions
+- **Action**: Generate PRP documents based on planning content
+- **Format**: Clear descriptions of what users will experience
 
-#### Implementation Documents (Execute Sequentially):
-- **PRP-00-Design-System-Testing-Foundation.md** - Foundation (design system, testing infrastructure)
-- **PRP-01-Setup.md** - Project setup (Vite, Tauri, dependencies)
-- **PRP-02-UI-Skeleton.md** - Basic UI layout and components
-- **PRP-03-Folder-File-Handling.md** - File system implementation
-- **PRP-04-Tabs.md** - Tab management system
-- **PRP-05-Editor.md** - Monaco Editor integration
-- **PRP-06-State-Persistence.md** - State management and persistence
-- **PRP-07-Packaging.md** - macOS packaging and distribution
-- **PRP-08-Architecture-Consolidation.md** - Final architecture optimization
+### 3. Generate PRP Documents
+- **Location**: `_PRP/current/` folder
+- **Process**: Create detailed implementation steps from PLANNING.md
+- **Format**: PRP-[YYYY]-[MM]-[DD]-[number]-[feature].md with numbered phases
+- **Content**: Complete technical details, code examples, testing requirements
 
-#### Supporting Documents (Reference as needed):
-- **File-Structure-Summary.md** - Complete file organization overview
-- **Implementation-Plan-Summary.md** - Comprehensive implementation strategy
+### 4. Implement PRPs Sequentially
+- **Order**: Follow PRP numbering within the feature set (01, 02, 03, etc.)
+- **Completion**: Move completed PRPs to `_PRP/archive/`
+- **Iteration**: Continue until all PRPs in `_PRP/current/` are implemented
+- **Mandatory**: Complete ALL PRPs before stopping
 
-## General Goals
-- Build a lightweight, efficient, and modern desktop text/code editor for macOS.
-- Use React + TypeScript for the frontend and Tauri for native desktop integration and packaging.
-- Ensure the app is resource-efficient, fast, and easy to maintain.
-- Leverage your experience as a frontend engineer with JavaScript/TypeScript.
+### 5. Archive Completed PRPs
+- **Action**: Move implemented PRPs to `_PRP/archive/`
+- **Purpose**: Maintain clean current folder, preserve implementation history
+- **Tracking**: Keep track of completed phases and lessons learned
+- **Documentation**: Update archive README.md with new completed features
 
-## Core Requirements
+## PRP Naming Convention
 
-### 1. Open Folders
-- User can select and open a folder from the filesystem.
-- Left sidebar displays the folder structure as a tree view, similar to VS Code.
+### Format: `PRP-[YYYY]-[MM]-[DD]-[number]-[feature].md`
 
-### 2. Multiple Tabs
-- Users can open multiple files in tabs.
-- Tabs can be switched, closed, and reordered.
+**Examples:**
+- `PRP-2024-01-15-01-Design-System-Testing-Foundation.md`
+- `PRP-2024-01-15-02-Setup.md`
+- `PRP-2024-01-15-03-UI-Skeleton.md`
 
-### 3. State Persistence
-- The app remembers open folders, files, tabs, and window state on close.
-- On restart, the previous state is restored automatically.
+**Components:**
+- `[YYYY]`: Four-digit year
+- `[MM]`: Two-digit month (01-12)
+- `[DD]`: Two-digit day (01-31)
+- `[number]`: Sequential number within the feature set (01, 02, 03, etc.)
+- `[feature]`: Descriptive feature name (kebab-case)
 
-### 4. Dark Theme
-- The app uses a default dark theme, visually similar to VS Code.
-- (Optional) Allow toggling between dark and light themes.
+**Benefits:**
+- Files sort chronologically in filesystem
+- Clear date tracking for feature sets
+- Sequential numbering within feature sets
+- Descriptive feature names for easy identification
 
-### 5. Lightweight & Efficient
-- Minimal dependencies, fast startup, and low memory usage.
-- Avoid unnecessary features to keep the app focused and performant.
+## Development Rules & Best Practices
 
-### 6. Syntax Highlighting & Indentation
-- Automatic code highlighting and indentation for recognized source code files.
-- Use Monaco Editor for code editing, supporting multiple languages.
+### Code Quality Standards
+- **TypeScript**: Use strict mode, proper interfaces, type safety
+- **Testing**: >80% coverage, unit + integration + E2E tests
+- **Accessibility**: WCAG 2.1 AA compliance, ARIA labels, keyboard navigation
+- **Performance**: <100ms component render times, optimized bundles
+- **Documentation**: Clear comments, README updates, inline docs
+- **Code Structure**: Logical organization, avoid duplication, use enums and constants
+- **Abstraction**: Extract reusable patterns, avoid hardcoding business logic
 
-### 7. macOS Packaging
-- Build as a native .app for macOS using Tauri.
-- Automate packaging and (optionally) signing/notarization for distribution.
+### Architecture Rules
+- **Design System**: Use centralized tokens, consistent patterns
+- **State Management**: Zustand stores with clear responsibilities
+- **Component Patterns**: Functional components, composition over inheritance
+- **Error Handling**: Proper boundaries, user-friendly messages
+- **File Organization**: Logical structure, clear naming conventions
+- **Code Abstraction**: Use enums, constants, and utility functions to avoid duplication
+- **Business Logic**: Extract reusable patterns, avoid hardcoding values
+- **Refactoring**: Continuously refactor to maintain clean, logical structure
 
-### 8. Comprehensive Testing
-- Implement thorough automated testing at all levels.
-- Maintain high test coverage and code quality.
-- Ensure reliable and maintainable codebase.
+### Testing Requirements
+- **Unit Tests**: Individual components, utilities, hooks
+- **Integration Tests**: Store interactions, component integration
+- **E2E Tests**: Critical user workflows, complete scenarios
+- **Coverage**: Maintain >80% coverage across all code
+- **Performance**: Monitor bundle size, render times, memory usage
+- **Command**: Use `npm run test:run` (NOT `npm test`)
 
-## Tech Stack
-- **Frontend:** React, TypeScript, Monaco Editor, Tailwind CSS
-- **Desktop Integration:** Tauri (Rust backend)
-- **State Management:** Zustand
-- **Filesystem:** Tauri APIs
-- **Packaging:** Tauri build system, (optional) GitHub Actions for CI/CD
-- **Testing:** Vitest, React Testing Library, MSW (Mock Service Worker)
-- **Code Quality:** ESLint, Prettier, TypeScript strict mode
+### Development Workflow
+- **TDD Approach**: Write tests before implementation
+- **Incremental Development**: Small, focused changes
+- **Code Review**: Self-review before moving to next PRP
+- **Documentation**: Update docs with each implementation
+- **Version Control**: Meaningful commits, feature branches
 
-## UI/Styling Strategy
+### Quality Assurance
+- **Linting**: ESLint + Prettier for consistent code style
+- **Type Checking**: Strict TypeScript configuration
+- **Build Verification**: Ensure builds work before archiving PRPs
+- **User Experience**: Test from user perspective, accessibility
+- **Performance**: Monitor and optimize throughout development
 
-### Design System
-- **Theme:** VS Code-inspired dark theme with consistent color palette
-- **Styling:** Tailwind CSS with custom design tokens
-- **Components:** Reusable component library with consistent patterns
-- **Layout:** Responsive design with proper accessibility
+### Project Structure Rules
+- **Components**: `src/components/` with clear organization
+- **Stores**: `src/stores/` with single responsibility
+- **Utils**: `src/utils/` for shared functionality
+- **Tests**: Mirror source structure in test files
+- **Docs**: Keep documentation current and comprehensive
 
-### Color Palette
-```css
-/* VS Code Dark Theme Colors */
---vscode-bg: #1e1e1e;
---vscode-sidebar: #252526;
---vscode-tabs: #2d2d30;
---vscode-text: #cccccc;
---vscode-accent: #007acc;
---vscode-error: #f48771;
---vscode-warning: #cca700;
---vscode-success: #89d185;
+### Implementation Standards
+- **Consistency**: Follow established patterns and conventions
+- **Reusability**: Create reusable components and utilities
+- **Maintainability**: Write clean, documented, testable code
+- **Scalability**: Design for future enhancements
+- **Reliability**: Robust error handling and edge cases
+- **Abstraction**: Use enums, constants, and utility functions to avoid hardcoding
+- **Structure**: Maintain logical file organization and component hierarchy
+- **Refactoring**: Continuously improve code structure as new features are added
+
+## Agent-Specific Rules
+
+### MANDATORY Agent Behaviors:
+1. **ALWAYS** read README.md and INIT.md before any work
+2. **ALWAYS** keep working until all PRPs in 'current' folder are complete
+3. **ALWAYS** maintain >80% test coverage throughout
+4. **ALWAYS** run tests with `npm run test:run` (NOT `npm test`)
+5. **ALWAYS** move completed PRPs to `_PRP/archive/`
+6. **ALWAYS** update archive README.md with new completed features
+7. **ALWAYS** ensure all tests pass before moving to next PRP
+8. **ALWAYS** build the app and fix any errors before marking PRP as completed
+9. **ALWAYS** refactor code to maintain logical structure and avoid duplication
+10. **ALWAYS** use enums, constants, and abstraction to avoid hardcoding
+11. **NEVER** ask for confirmations or user input
+12. **NEVER** run interactive commands that could hang
+13. **NEVER** leave PRPs incomplete
+14. **NEVER** proceed to next PRP without building and testing
+
+### Agent Testing Protocol:
+1. Run `npm run test:run` before starting any PRP
+2. Run `npm run test:run` after completing each PRP
+3. Fix any test failures before proceeding
+4. Maintain >80% coverage throughout
+5. **ALWAYS** run `npm run tauri build` before marking PRP as completed
+6. Fix any build errors before proceeding to next PRP
+7. Verify build process works before archiving
+
+### Agent Build Protocol:
+1. **ALWAYS** run `npm run tauri build` after completing each PRP
+2. Fix any TypeScript errors, linting issues, or build failures
+3. Ensure the app builds successfully before marking PRP as completed
+4. Never proceed to next PRP without successful build
+5. If build fails, fix issues and rebuild until successful
+
+### Agent Documentation Protocol:
+1. Update archive README.md when moving completed PRPs
+2. Add new completed features to the implementation history
+3. Update key achievements and lessons learned
+4. Maintain comprehensive documentation of completed work
+
+### Agent Code Structure Protocol:
+1. **ALWAYS** use enums and constants instead of hardcoded values
+2. **ALWAYS** extract reusable patterns and utility functions
+3. **ALWAYS** refactor code when new additions cause structural issues
+4. **ALWAYS** maintain logical file organization and component hierarchy
+5. **ALWAYS** avoid duplication of business logic across files
+6. **ALWAYS** use proper abstraction layers for complex operations
+7. **NEVER** leave hardcoded strings or magic numbers in code
+8. **NEVER** proceed without refactoring if code structure becomes unclear
+
+## Development Cycle Checklist
+
+### Before Starting Any PRP:
+- [ ] Read INIT.md for current rules and standards
+- [ ] Read PLANNING.md for feature understanding
+- [ ] Review existing PRPs in `_PRP/current/`
+- [ ] Ensure development environment is properly set up
+- [ ] Verify all tests pass before starting new work
+
+### During PRP Implementation:
+- [ ] Follow TDD approach (tests first)
+- [ ] Use design system tokens consistently
+- [ ] Implement comprehensive error handling
+- [ ] Add accessibility features
+- [ ] Write clear documentation
+- [ ] Test thoroughly before completion
+
+### After PRP Completion:
+- [ ] Run `npm run test:run` to ensure no regressions
+- [ ] Run `npm run tauri build` to verify build process
+- [ ] Fix any build errors before proceeding
+- [ ] Refactor code if needed to maintain logical structure
+- [ ] Update documentation as needed
+- [ ] Move PRP to `_PRP/archive/`
+- [ ] Update archive README.md with new completed features
+- [ ] Update project status tracking
+- [ ] Review lessons learned for future PRPs
+
+### Quality Gates:
+- [ ] All tests pass (>80% coverage)
+- [ ] No TypeScript errors
+- [ ] No linting warnings
+- [ ] Build completes successfully (`npm run tauri build`)
+- [ ] Code structure is logical and well-organized
+- [ ] No hardcoded values or duplicated business logic
+- [ ] Accessibility requirements met
+- [ ] Performance benchmarks achieved
+
+## File Organization
+
+```
+_PRP/
+├── INIT.md                    # Development cycle and rules (this file)
+├── PLANNING.md                # Feature descriptions (user-facing)
+├── current/                   # Active PRPs to be implemented
+│   ├── PRP-2024-01-15-01-Feature-Foundation.md
+│   ├── PRP-2024-01-15-02-Basic-Implementation.md
+│   └── ...
+└── archive/                   # Completed PRPs
+    ├── PRP-2024-01-15-01-Design-System-Testing-Foundation.md
+    ├── PRP-2024-01-15-02-Setup.md
+    └── ...
 ```
 
-### Component Architecture
-- **Atomic Design:** Atoms → Molecules → Organisms → Templates → Pages
-- **Consistent Patterns:** Standardized prop interfaces and styling
-- **Accessibility:** ARIA labels, keyboard navigation, screen reader support
-- **Performance:** Optimized rendering with React.memo and virtualization
+## Success Metrics
 
-## Testing Strategy
-
-### Testing Pyramid
-1. **Unit Tests (70%):** Individual functions, components, utilities
-2. **Integration Tests (20%):** Store interactions, API calls, component integration
-3. **E2E Tests (10%):** Complete user workflows, critical paths
-
-### Testing Tools
-- **Vitest:** Fast unit testing with TypeScript support
-- **React Testing Library:** Component testing with user-centric approach
-- **MSW:** API mocking for integration tests
-- **Playwright:** E2E testing for critical user flows
-- **Coverage:** Istanbul for code coverage reporting
-
-### Testing Standards
-- **Coverage Threshold:** 80% minimum coverage
-- **Test Organization:** Mirror source code structure
-- **Naming Convention:** `*.test.ts` for unit tests, `*.spec.ts` for integration
-- **Mock Strategy:** Comprehensive mocking of external dependencies
-
-## Implementation Approach
-
-### Phase-Based Development
-- Follow an iterative, PRP-driven development process.
-- Start with PRP-00 (Design System & Testing Foundation) to establish standards.
-- Each subsequent PRP file defines a focused phase with clear goals and steps.
-- Implement testing alongside feature development (TDD approach).
-- Use this INIT.md as a reference context for all implementation work.
-
-### Quality Standards
-- **Code Coverage:** >80% for unit tests
-- **Accessibility:** WCAG 2.1 AA compliance
-- **Performance:** <100ms component render time
-- **Reliability:** <1% test flakiness
-- **Maintainability:** Consistent code patterns
-
-### Implementation Checklist for Each Phase:
-- [ ] Review PRP-REF-UI-Testing-Analysis.md for standards
-- [ ] Use design system tokens consistently
-- [ ] Follow established component patterns
-- [ ] Implement comprehensive tests (>80% coverage)
-- [ ] Add accessibility features
-- [ ] Test error handling scenarios
-- [ ] Verify performance requirements
-- [ ] Document any deviations from standards
+- **Code Quality**: >80% test coverage, no linting errors
+- **Performance**: <100ms component renders, optimized bundles
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Reliability**: <1% test flakiness, robust error handling
+- **Maintainability**: Clear documentation, consistent patterns
+- **Code Structure**: Logical organization, no duplication, proper abstraction
+- **Build Process**: Successful builds with no errors
+- **User Experience**: Intuitive interface, responsive design
+- **Completion**: All PRPs in 'current' folder implemented and archived
+- **Documentation**: Archive README.md updated with new completed features
 
 ## Getting Started
 
-### For New Implementation:
-1. **Read this file (INIT.md)** - Understand project goals and approach
-2. **Review PRP-REF-UI-Testing-Analysis.md** - Understand unified approach
-3. **Start with PRP-00** - Implement design system and testing foundation
-4. **Follow PRP-Implementation-Sequence.md** - Execute phases sequentially
-5. **Reference specific PRP files** - Get detailed implementation steps
-
-### For Continuing Implementation:
-1. **Re-read this file** - Refresh understanding of project goals
-2. **Check current phase** - Identify which PRP to implement next
-3. **Review PRP-REF-UI-Testing-Analysis.md** - Ensure standards compliance
-4. **Implement current PRP** - Follow detailed implementation steps
-5. **Update progress** - Document completion and move to next phase
+1. **Read this file (INIT.md)** - Understand development rules
+2. **Read PLANNING.md** - Understand feature requirements
+3. **Review current PRPs** - See what needs implementation
+4. **Follow development cycle** - Implement PRPs sequentially
+5. **Archive completed work** - Maintain clean project structure
+6. **Update documentation** - Keep archive README.md current
 
 ## References
+
 - [Tauri Documentation](https://tauri.app/v1/guides/)
-- [Monaco Editor](https://microsoft.github.io/monaco-editor/)
-- [VS Code source](https://github.com/microsoft/vscode)
-- [Tauri + Monaco Example](https://github.com/tauri-apps/tauri/discussions/3912)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
-- [Vitest Documentation](https://vitest.dev/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 
-## Project Status Tracking
-
-### Completed Phases:
-- [ ] PRP-00: Design System & Testing Foundation
-- [ ] PRP-01: Project Setup
-- [ ] PRP-02: UI Skeleton
-- [ ] PRP-03: Folder & File Handling
-- [ ] PRP-04: Tab Management
-- [ ] PRP-05: Editor Integration
-- [ ] PRP-06: State Persistence
-- [ ] PRP-07: Packaging & Distribution
-- [ ] PRP-08: Architecture Consolidation
-
-### Current Focus:
-- Start with PRP-00 to establish foundation
-- Follow sequential implementation order
-- Maintain quality standards throughout
-- Document progress and lessons learned
+This structure ensures consistent, high-quality development with clear processes and maintainable codebase. 

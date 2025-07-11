@@ -1,0 +1,135 @@
+import { editor } from 'monaco-editor';
+import { languageDetector } from './languageDetection';
+
+export const EDITOR_THEME = 'vs-dark';
+
+export const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
+  theme: EDITOR_THEME,
+  fontSize: 14,
+  fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+  lineNumbers: 'on',
+  minimap: {
+    enabled: true,
+    side: 'right',
+  },
+  scrollBeyondLastLine: false,
+  automaticLayout: true,
+  wordWrap: 'on',
+  folding: true,
+  foldingStrategy: 'indentation',
+  showFoldingControls: 'always',
+  renderWhitespace: 'selection',
+  renderControlCharacters: false,
+  renderLineHighlight: 'all',
+  selectOnLineNumbers: true,
+  roundedSelection: false,
+  readOnly: false,
+  cursorStyle: 'line',
+  scrollbar: {
+    vertical: 'visible',
+    horizontal: 'visible',
+    verticalScrollbarSize: 10,
+    horizontalScrollbarSize: 10,
+  },
+  suggest: {
+    showKeywords: true,
+    showSnippets: true,
+    showClasses: true,
+    showFunctions: true,
+    showVariables: true,
+    showModules: true,
+    showProperties: true,
+    showEvents: true,
+    showOperators: true,
+    showUnits: true,
+    showValues: true,
+    showConstants: true,
+    showEnums: true,
+    showEnumMembers: true,
+    showColors: true,
+    showFiles: true,
+    showReferences: true,
+    showFolders: true,
+    showTypeParameters: true,
+    showWords: true,
+  },
+  quickSuggestions: {
+    other: true,
+    comments: true,
+    strings: true,
+  },
+  parameterHints: {
+    enabled: true,
+  },
+  hover: {
+    enabled: true,
+  },
+  contextmenu: true,
+  mouseWheelZoom: true,
+  bracketPairColorization: {
+    enabled: true,
+  },
+  guides: {
+    bracketPairs: true,
+    indentation: true,
+  },
+};
+
+export const LANGUAGE_MAP: Record<string, string> = {
+  'javascript': 'javascript',
+  'js': 'javascript',
+  'jsx': 'javascript',
+  'typescript': 'typescript',
+  'ts': 'typescript',
+  'tsx': 'typescript',
+  'html': 'html',
+  'htm': 'html',
+  'css': 'css',
+  'scss': 'scss',
+  'sass': 'scss',
+  'less': 'less',
+  'json': 'json',
+  'markdown': 'markdown',
+  'md': 'markdown',
+  'python': 'python',
+  'py': 'python',
+  'java': 'java',
+  'cpp': 'cpp',
+  'c': 'c',
+  'c++': 'cpp',
+  'php': 'php',
+  'ruby': 'ruby',
+  'rb': 'ruby',
+  'go': 'go',
+  'rust': 'rust',
+  'rs': 'rust',
+  'sql': 'sql',
+  'xml': 'xml',
+  'yaml': 'yaml',
+  'yml': 'yaml',
+  'toml': 'toml',
+  'ini': 'ini',
+  'shell': 'shell',
+  'bash': 'shell',
+  'sh': 'shell',
+  'zsh': 'shell',
+  'fish': 'shell',
+  'powershell': 'powershell',
+  'ps1': 'powershell',
+  'batch': 'batch',
+  'bat': 'batch',
+  'cmd': 'batch',
+  'vue': 'vue',
+  'svelte': 'svelte',
+  'astro': 'astro',
+  'txt': 'plaintext',
+  'plaintext': 'plaintext',
+};
+
+export function detectLanguage(filePath: string): string {
+  return languageDetector.getLanguage(filePath);
+}
+
+export function getEditorTheme(): string {
+  return EDITOR_THEME;
+} 
