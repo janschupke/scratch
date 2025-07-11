@@ -1,3 +1,5 @@
+**An experiment repo. It doesn't work**
+
 # Scratch Editor
 
 A modern, lightweight, and efficient desktop text/code editor for macOS, inspired by VS Code. Built with React, TypeScript, Zustand, Monaco Editor, Tailwind CSS, and Tauri for native integration and packaging.
