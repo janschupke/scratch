@@ -1,100 +1,177 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEditorStore } from '../../stores/editorStore';
 import { useTabStore } from '../../stores/tabStore';
+import { useStatusBarStore, StatusItem } from '../../stores/statusBarStore';
+import { ViewOperations } from '../../services/viewOperations';
+import { cn } from '../../utils/cn';
 
 interface EditorStatusBarProps {
   language: string;
-  filePath: string;
   isModified: boolean;
 }
 
 export const EditorStatusBar: React.FC<EditorStatusBarProps> = ({
   language,
-  filePath,
   isModified,
 }) => {
   const { editorInstance, settings } = useEditorStore();
   const { activeTabId, tabs } = useTabStore();
+  const statusBarStore = useStatusBarStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
-  const [cursorPosition, setCursorPosition] = React.useState({ line: 1, column: 1 });
-  const [selection, setSelection] = React.useState<{ start: number; end: number } | null>(null);
+  const [focusedItem, setFocusedItem] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  // Update file info when active tab changes
+  useEffect(() => {
+    if (activeTab && activeTab.content !== undefined) {
+      statusBarStore.getFileInfo(activeTab.path, activeTab.content).then(fileInfo => {
+        statusBarStore.updateFileInfo({
+          ...fileInfo,
+          isModified: activeTab.isModified || false,
+          isReadOnly: false // TODO: Implement read-only detection
+        });
+      });
+    }
+  }, [activeTab, statusBarStore]);
+
+  // Update editor state when editor instance changes
+  useEffect(() => {
     if (!editorInstance) return;
 
-    const updatePosition = () => {
+    const updateEditorState = () => {
       const position = editorInstance.getPosition();
-      if (position) {
-        setCursorPosition({
-          line: position.lineNumber,
-          column: position.column,
-        });
+      const selection = editorInstance.getSelection();
+      const model = editorInstance.getModel();
+      
+      if (position && model) {
+        const editorState = {
+          cursorPosition: {
+            line: position.lineNumber,
+            column: position.column,
+          },
+          selection: selection ? {
+            start: {
+              line: selection.getStartPosition().lineNumber,
+              column: selection.getStartPosition().column,
+            },
+            end: {
+              line: selection.getEndPosition().lineNumber,
+              column: selection.getEndPosition().column,
+            }
+          } : null,
+          zoomLevel: ViewOperations.getCurrentZoomLevel() / 14, // Normalize to 0-1 range
+          indentation: `${settings.tabSize} spaces`,
+          language: language
+        };
+
+        statusBarStore.updateEditorState(editorState);
       }
     };
 
+    const updatePosition = () => {
+      updateEditorState();
+    };
+
     const updateSelection = () => {
-      const selection = editorInstance.getSelection();
-      if (selection) {
-        const start = editorInstance.getModel()?.getOffsetAt(selection.getStartPosition()) || 0;
-        const end = editorInstance.getModel()?.getOffsetAt(selection.getEndPosition()) || 0;
-        setSelection({ start, end });
-      }
+      updateEditorState();
     };
 
     editorInstance.onDidChangeCursorPosition(updatePosition);
     editorInstance.onDidChangeCursorSelection(updateSelection);
-    updatePosition();
-    updateSelection();
+    updateEditorState();
 
     return () => {
       // Cleanup will be handled by Monaco Editor
     };
-  }, [editorInstance]);
+  }, [editorInstance, language, settings.tabSize, statusBarStore]);
 
-  const formatFileSize = (size: number): string => {
-    if (size < 1024) return `${size} B`;
-    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  const handleItemClick = (item: StatusItem) => {
+    if (item.clickable) {
+      // Focus the editor when clicking on status items
+      editorInstance?.focus();
+    }
   };
 
-  const getFileName = (path: string): string => {
-    return path.split('/').pop() || 'Untitled';
+  const handleItemContextMenu = (_item: StatusItem, event: React.MouseEvent) => {
+    event.preventDefault();
+    // TODO: Implement context menu for status items
   };
 
-  const getFileDirectory = (path: string): string => {
-    const parts = path.split('/');
-    return parts.length > 1 ? parts.slice(0, -1).join('/') : '';
+  const handleKeyDown = (event: React.KeyboardEvent, item: StatusItem) => {
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        handleItemClick(item);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        // Navigate to next item
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        // Navigate to previous item
+        break;
+    }
   };
 
-  const fileSize = activeTab?.content ? new Blob([activeTab.content]).size : 0;
-  const hasSelection = selection && selection.start !== selection.end;
-  const selectionLength = hasSelection ? selection.end - selection.start : 0;
+  const renderStatusItem = (item: StatusItem) => (
+    <div
+      key={item.id}
+      className={cn(
+        'flex items-center space-x-1 px-2 py-1 rounded text-xs text-gray-400 hover:text-gray-200 transition-colors',
+        item.clickable && 'cursor-pointer hover:bg-gray-700',
+        focusedItem === item.id && 'bg-gray-700 text-gray-200',
+        item.className
+      )}
+      onClick={() => handleItemClick(item)}
+      onContextMenu={(e) => handleItemContextMenu(item, e)}
+      onKeyDown={(e) => handleKeyDown(e, item)}
+      onFocus={() => setFocusedItem(item.id)}
+      onBlur={() => setFocusedItem(null)}
+      tabIndex={item.clickable ? 0 : -1}
+      role={item.clickable ? 'button' : 'status'}
+      aria-label={item.tooltip || `${item.label}: ${item.value}`}
+      title={item.tooltip}
+    >
+      {item.icon && <span className="status-icon">{item.icon}</span>}
+      <span className="status-label font-medium">{item.label}:</span>
+      <span className="status-value">{item.value}</span>
+    </div>
+  );
+
+  if (!statusBarStore.state.isVisible) {
+    return null;
+  }
 
   return (
-    <div className="h-6 bg-vscode-sidebar border-t border-gray-700 flex items-center justify-between px-3 text-xs text-gray-400">
-      <div className="flex items-center space-x-4">
-        <span>Ln {cursorPosition.line}, Col {cursorPosition.column}</span>
-        {hasSelection && (
-          <span>({selectionLength} chars)</span>
-        )}
-        <span>Spaces: {settings.tabSize}</span>
-        <span>Encoding: UTF-8</span>
-        {fileSize > 0 && (
-          <span>{formatFileSize(fileSize)}</span>
-        )}
+    <div 
+      className="h-6 bg-vscode-sidebar border-t border-gray-700 flex items-center justify-between px-3 text-xs"
+      role="status" 
+      aria-live="polite"
+    >
+      <div className="flex items-center space-x-1">
+        {statusBarStore.state.items.map(renderStatusItem)}
       </div>
       
-      <div className="flex items-center space-x-4">
-        <span className={isModified ? 'text-yellow-400' : ''}>
-          {isModified ? '●' : ''}
-        </span>
-        <span className="uppercase">{language}</span>
-        <span className="truncate max-w-64" title={filePath}>
-          {getFileDirectory(filePath) && (
-            <span className="text-gray-500">{getFileDirectory(filePath)}/</span>
-          )}
-          {getFileName(filePath)}
-        </span>
+      <div className="flex items-center space-x-1">
+        {statusBarStore.state.customItems.map(renderStatusItem)}
+        
+        {/* Modified indicator */}
+        {isModified && (
+          <div className="flex items-center space-x-1 px-2 py-1">
+            <span className="text-yellow-400">●</span>
+            <span className="text-gray-400">Modified</span>
+          </div>
+        )}
+        
+                 {/* File path display */}
+         {activeTab && (
+           <div className="flex items-center space-x-1 px-2 py-1 max-w-64">
+             <span className="text-gray-400 truncate" title={activeTab.path}>
+               {activeTab.path.split('/').slice(-2).join('/')}
+             </span>
+           </div>
+         )}
       </div>
     </div>
   );

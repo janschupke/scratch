@@ -129,7 +129,10 @@ the archive README.md with new completed features.
 
 ### For Feature Planning:
 ```
-Update PLANNING.md with the following user-facing feature descriptions: [describe features]. 
+Update PLANNING.md with the following user-facing feature descriptions:
+
+[describe features]. 
+
 Focus on what users will experience, not technical implementation details.
 ```
 

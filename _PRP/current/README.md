@@ -16,70 +16,46 @@ PRP documents in this folder should follow the naming convention:
 
 ## Current PRPs (2025-01-27)
 
-### Critical Issues (High Priority)
+### Core Feature Implementation (High Priority)
 
-1. **PRP-2025-01-27-01-Fix-Folder-Opening-Error.md**
-   - **Issue**: Users encounter React error #310 when trying to open folders
-   - **Impact**: Prevents any file editing functionality
+1. **PRP-2025-01-27-01-Menu-System-Implementation.md**
+   - **Feature**: Complete menu system functionality implementation
+   - **Impact**: Provides full access to editor functions through menu bar
    - **Status**: Ready for implementation
-   - **Priority**: Critical - Must be fixed before other development
+   - **Priority**: High - Essential for complete application functionality
 
-2. **PRP-2025-01-27-02-Create-Comprehensive-Test-Suite.md**
-   - **Issue**: Need comprehensive testing to verify folder and file operations
-   - **Impact**: Ensures reliability and prevents regressions
+2. **PRP-2025-01-27-02-File-Navigation-Enhancement.md**
+   - **Feature**: Enhanced file navigation with intelligent tab management
+   - **Impact**: Seamless file browsing and tab management experience
    - **Status**: Ready for implementation
-   - **Priority**: Critical - Must be implemented alongside folder opening fix
+   - **Priority**: High - Core user workflow functionality
 
-3. **PRP-2025-01-27-03-Fix-Cmd-Q-on-Mac.md**
-   - **Issue**: Application hijacks Cmd+Q, preventing normal app quit
-   - **Impact**: Violates macOS user experience guidelines
-   - **Status**: Ready for implementation
-   - **Priority**: Critical - Affects basic application behavior
-
-4. **PRP-2025-01-27-04-Update-Hotkey-Notation.md**
-   - **Issue**: Shows "Ctrl + letter" instead of "Cmd + letter" on Mac
-   - **Impact**: Creates user confusion about keyboard shortcuts
-   - **Status**: Ready for implementation
-   - **Priority**: Critical - Affects user understanding of shortcuts
-
-### UI/UX Improvements (Medium Priority)
-
-5. **PRP-2025-01-27-05-Add-Status-Bar.md**
-   - **Feature**: Status bar showing file info, cursor position, encoding
+3. **PRP-2025-01-27-03-Status-Bar-Information.md**
+   - **Feature**: Comprehensive status bar with file information display
    - **Impact**: Provides important contextual information to users
    - **Status**: Ready for implementation
-   - **Priority**: Medium - Enhances user experience
+   - **Priority**: High - Enhances user experience significantly
 
-6. **PRP-2025-01-27-06-Add-Find-Replace-Interface.md**
-   - **Feature**: Expandable find/replace UI with search options
-   - **Impact**: Essential editing functionality for productivity
+4. **PRP-2025-01-27-04-Session-Persistence-Enhancement.md**
+   - **Feature**: Complete workspace state persistence and restoration
+   - **Impact**: Remembers user workspace between sessions
    - **Status**: Ready for implementation
-   - **Priority**: Medium - Enhances editing capabilities
-
-7. **PRP-2025-01-27-07-Remove-Irrelevant-Menu-Items.md**
-   - **Feature**: Remove "Check for Updates" and other irrelevant menu items
-   - **Impact**: Cleaner, more focused menu system
-   - **Status**: Ready for implementation
-   - **Priority**: Medium - Improves menu clarity
-
-8. **PRP-2025-01-27-08-Connect-Menu-Actions.md**
-   - **Feature**: Connect menu items to actual functionality
-   - **Impact**: Makes application fully functional and user-friendly
-   - **Status**: Ready for implementation
-   - **Priority**: Medium - Essential for complete functionality
+   - **Priority**: High - Essential for user productivity
 
 ## Implementation Order
 
 **Recommended Implementation Sequence:**
 
-1. **PRP-01** (Fix Folder Opening Error) - Critical blocking issue
-2. **PRP-02** (Create Test Suite) - Implement alongside PRP-01
-3. **PRP-03** (Fix Cmd+Q) - Critical system behavior
-4. **PRP-04** (Update Hotkey Notation) - Critical user experience
-5. **PRP-05** (Add Status Bar) - UI enhancement
-6. **PRP-06** (Add Find/Replace) - Core editing functionality
-7. **PRP-07** (Remove Irrelevant Menu Items) - Menu cleanup
-8. **PRP-08** (Connect Menu Actions) - Complete functionality
+1. **PRP-01** (Menu System Implementation) - Core application functionality
+2. **PRP-02** (File Navigation Enhancement) - Essential user workflow
+3. **PRP-03** (Status Bar Information) - User experience enhancement
+4. **PRP-04** (Session Persistence Enhancement) - User productivity feature
+
+**Implementation Notes:**
+- Each PRP builds upon the previous one
+- All PRPs include comprehensive testing requirements
+- Performance and accessibility are prioritized throughout
+- Code quality and maintainability are emphasized
 
 ## PRP Content Requirements
 

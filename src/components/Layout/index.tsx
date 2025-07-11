@@ -47,7 +47,6 @@ export const Layout: React.FC<LayoutProps> = ({
         {activeTabId && (
           <EditorStatusBar
             language={activeTab?.language || 'plaintext'}
-            filePath={activeTab?.path || ''}
             isModified={activeTab?.isModified || false}
           />
         )}

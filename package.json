@@ -31,7 +31,8 @@
     "sign:mac": "npm run package:mac && codesign --force --deep --sign - src-tauri/target/release/bundle/macos/Scratch.app",
     "notarize:mac": "npm run sign:mac && xcrun notarytool submit src-tauri/target/release/bundle/macos/Scratch.app --apple-id $APPLE_ID --password $APP_PASSWORD --team-id $TEAM_ID",
     "create:dmg": "npm run package:mac && create-dmg src-tauri/target/release/bundle/macos/Scratch.app",
-    "release:mac": "npm run clean && npm run package:mac && npm run sign:mac && npm run notarize:mac"
+    "release:mac": "npm run clean && npm run package:mac && npm run sign:mac && npm run notarize:mac",
+    "open:app": "open src-tauri/target/release/bundle/macos/Scratch.app"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

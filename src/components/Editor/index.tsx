@@ -134,11 +134,10 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({ isActive }) => {
         />
       </div>
       
-      <EditorStatusBar 
-        language={language}
-        filePath={activeTab.path}
-        isModified={activeTab.isModified}
-      />
+      <EditorStatusBar
+          language={activeTab?.language || 'plaintext'}
+          isModified={activeTab?.isModified || false}
+        />
     </div>
   );
 }; 

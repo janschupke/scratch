@@ -1,57 +1,82 @@
 import React from 'react';
 import { useMenuStore } from '../stores/menuStore';
-import { MenuActions } from '../services/menuActions';
+import { MenuActionManager } from '../services/menuActionManager';
 import { formatShortcut } from '../utils/shortcutUtils';
 
 const menuConfig = [
   {
     label: 'File',
     items: [
-      { label: 'New File', action: MenuActions.newFile, shortcut: 'Ctrl+N' },
-      { label: 'Open File...', action: MenuActions.openFile, shortcut: 'Ctrl+O' },
-      { label: 'Open Folder...', action: MenuActions.openFolder },
-      { label: 'Save', action: MenuActions.save, shortcut: 'Ctrl+S' },
-      { label: 'Save As...', action: MenuActions.saveAs },
-      { label: 'Exit', action: MenuActions.exit },
+      { id: 'file.newFile', label: 'New File', shortcut: 'Cmd+N' },
+      { id: 'file.openFile', label: 'Open File...', shortcut: 'Cmd+O' },
+      { id: 'file.openFolder', label: 'Open Folder...', shortcut: 'Cmd+Shift+O' },
+      { type: 'separator' },
+      { id: 'file.save', label: 'Save', shortcut: 'Cmd+S' },
+      { id: 'file.saveAs', label: 'Save As...', shortcut: 'Cmd+Shift+S' },
+      { type: 'separator' },
+      { id: 'file.close', label: 'Close', shortcut: 'Cmd+W' },
+      { id: 'file.exit', label: 'Exit', shortcut: 'Cmd+Q' },
     ],
   },
   {
     label: 'Edit',
     items: [
-      { label: 'Undo', action: MenuActions.undo, shortcut: 'Ctrl+Z' },
-      { label: 'Redo', action: MenuActions.redo, shortcut: 'Ctrl+Y' },
-      { label: 'Cut', action: MenuActions.cut, shortcut: 'Ctrl+X' },
-      { label: 'Copy', action: MenuActions.copy, shortcut: 'Ctrl+C' },
-      { label: 'Paste', action: MenuActions.paste, shortcut: 'Ctrl+V' },
-      { label: 'Find', action: MenuActions.find, shortcut: 'Ctrl+F' },
-      { label: 'Replace', action: MenuActions.replace, shortcut: 'Ctrl+H' },
-      { label: 'Select All', action: MenuActions.selectAll, shortcut: 'Ctrl+A' },
+      { id: 'edit.undo', label: 'Undo', shortcut: 'Cmd+Z' },
+      { id: 'edit.redo', label: 'Redo', shortcut: 'Cmd+Shift+Z' },
+      { type: 'separator' },
+      { id: 'edit.cut', label: 'Cut', shortcut: 'Cmd+X' },
+      { id: 'edit.copy', label: 'Copy', shortcut: 'Cmd+C' },
+      { id: 'edit.paste', label: 'Paste', shortcut: 'Cmd+V' },
+      { id: 'edit.selectAll', label: 'Select All', shortcut: 'Cmd+A' },
+      { type: 'separator' },
+      { id: 'edit.find', label: 'Find', shortcut: 'Cmd+F' },
+      { id: 'edit.replace', label: 'Replace', shortcut: 'Cmd+H' },
     ],
   },
   {
     label: 'View',
     items: [
-      { label: 'Toggle Sidebar', action: MenuActions.toggleSidebar },
-      { label: 'Toggle Status Bar', action: MenuActions.toggleStatusBar },
-      { label: 'Zoom In', action: MenuActions.zoomIn, shortcut: 'Ctrl+=' },
-      { label: 'Zoom Out', action: MenuActions.zoomOut, shortcut: 'Ctrl+-' },
-      { label: 'Reset Zoom', action: MenuActions.resetZoom },
-      { label: 'Full Screen', action: MenuActions.fullScreen, shortcut: 'F11' },
+      { id: 'view.toggleSidebar', label: 'Toggle Sidebar', shortcut: 'Cmd+B' },
+      { id: 'view.toggleStatusBar', label: 'Toggle Status Bar' },
+      { type: 'separator' },
+      { id: 'view.zoomIn', label: 'Zoom In', shortcut: 'Cmd+=' },
+      { id: 'view.zoomOut', label: 'Zoom Out', shortcut: 'Cmd+-' },
+      { id: 'view.resetZoom', label: 'Reset Zoom', shortcut: 'Cmd+0' },
+      { type: 'separator' },
+      { id: 'view.fullScreen', label: 'Full Screen', shortcut: 'F11' },
     ],
   },
   {
     label: 'Help',
     items: [
-      { label: 'About', action: MenuActions.about },
-      { label: 'Documentation', action: MenuActions.documentation },
-      { label: 'Keyboard Shortcuts', action: MenuActions.shortcuts },
+      { id: 'help.about', label: 'About' },
+      { id: 'help.documentation', label: 'Documentation' },
+      { id: 'help.shortcuts', label: 'Keyboard Shortcuts' },
     ],
   },
 ];
 
 export const MenuBar: React.FC = () => {
   const { isVisible, activeMenu, setActiveMenu } = useMenuStore();
+  const menuActionManager = MenuActionManager.getInstance();
+
   if (!isVisible) return null;
+
+  const handleMenuClick = async (actionId: string) => {
+    try {
+      await menuActionManager.executeAction(actionId);
+      setActiveMenu(null);
+    } catch (error) {
+      console.error('Failed to execute menu action:', error);
+    }
+  };
+
+  const handleMenuKeyDown = (e: React.KeyboardEvent, actionId: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleMenuClick(actionId);
+    }
+  };
 
   return (
     <nav className="bg-vscode-bg border-b border-vscode-border text-vscode-text select-none" role="menubar" aria-label="Application menu">
@@ -76,15 +101,21 @@ export const MenuBar: React.FC = () => {
             {activeMenu === menu.label && (
               <ul className="absolute left-0 mt-1 bg-vscode-bg border border-vscode-border shadow-lg z-50 min-w-[180px]" role="menu">
                 {menu.items.map(item => (
-                  <li key={item.label} role="menuitem">
-                    <button
-                      className="w-full text-left px-4 py-2 hover:bg-vscode-accent/10 focus:bg-vscode-accent/20 focus:outline-none"
-                      onClick={() => { item.action(); setActiveMenu(null); }}
-                      tabIndex={0}
-                    >
-                      <span>{item.label}</span>
-                      {item.shortcut && <span className="float-right text-xs text-gray-400">{formatShortcut(item.shortcut)}</span>}
-                    </button>
+                  <li key={item.id || item.label} role="menuitem">
+                    {item.type === 'separator' ? (
+                      <hr className="border-t border-vscode-border my-1" />
+                    ) : (
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-vscode-accent/10 focus:bg-vscode-accent/20 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => handleMenuClick(item.id!)}
+                        onKeyDown={(e) => handleMenuKeyDown(e, item.id!)}
+                        tabIndex={0}
+                        disabled={!menuActionManager.getAction(item.id!)?.enabled}
+                      >
+                        <span>{item.label}</span>
+                        {item.shortcut && <span className="float-right text-xs text-gray-400">{formatShortcut(item.shortcut)}</span>}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>

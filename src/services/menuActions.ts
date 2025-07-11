@@ -114,6 +114,17 @@ export class MenuActions {
     }
   }
 
+  static async close() {
+    try {
+      const { activeTabId, closeTab } = useTabStore.getState();
+      if (activeTabId) {
+        closeTab(activeTabId);
+      }
+    } catch (error) {
+      console.error('Failed to close tab:', error);
+    }
+  }
+
   static async exit() {
     try {
       const { tabs } = useTabStore.getState();
@@ -190,28 +201,60 @@ export class MenuActions {
   }
 
   static async toggleSidebar() {
-    const { isSidebarCollapsed } = useAppStore.getState();
-    useAppStore.getState().updateWindowState({ isSidebarCollapsed: !isSidebarCollapsed });
+    const { isSidebarCollapsed, updateWindowState } = useAppStore.getState();
+    await updateWindowState({ isSidebarCollapsed: !isSidebarCollapsed });
   }
 
   static async toggleStatusBar() {
-    // TODO: Implement status bar toggle
+    // TODO: Implement status bar toggle when status bar is implemented
     console.log('Toggle status bar action triggered');
   }
 
   static async zoomIn() {
-    // TODO: Implement zoom in functionality
-    console.log('Zoom in action triggered');
+    const { preferences, updatePreferences } = useAppStore.getState();
+    const currentFontSize = preferences.editor.fontSize;
+    const newFontSize = Math.min(currentFontSize + 1, 24); // Max font size of 24
+    
+    await updatePreferences({
+      editor: { ...preferences.editor, fontSize: newFontSize }
+    });
+    
+    // Update editor instance if available
+    const { editorInstance, updateSettings } = useEditorStore.getState();
+    if (editorInstance) {
+      updateSettings({ fontSize: newFontSize });
+    }
   }
 
   static async zoomOut() {
-    // TODO: Implement zoom out functionality
-    console.log('Zoom out action triggered');
+    const { preferences, updatePreferences } = useAppStore.getState();
+    const currentFontSize = preferences.editor.fontSize;
+    const newFontSize = Math.max(currentFontSize - 1, 8); // Min font size of 8
+    
+    await updatePreferences({
+      editor: { ...preferences.editor, fontSize: newFontSize }
+    });
+    
+    // Update editor instance if available
+    const { editorInstance, updateSettings } = useEditorStore.getState();
+    if (editorInstance) {
+      updateSettings({ fontSize: newFontSize });
+    }
   }
 
   static async resetZoom() {
-    // TODO: Implement reset zoom functionality
-    console.log('Reset zoom action triggered');
+    const { preferences, updatePreferences } = useAppStore.getState();
+    const defaultFontSize = 14;
+    
+    await updatePreferences({
+      editor: { ...preferences.editor, fontSize: defaultFontSize }
+    });
+    
+    // Update editor instance if available
+    const { editorInstance, updateSettings } = useEditorStore.getState();
+    if (editorInstance) {
+      updateSettings({ fontSize: defaultFontSize });
+    }
   }
 
   static async fullScreen() {
