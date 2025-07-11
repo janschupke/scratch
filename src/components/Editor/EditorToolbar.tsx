@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEditorStore } from '../../stores/editorStore';
+import { formatShortcut } from '../../utils/shortcutUtils';
 
 interface EditorToolbarProps {
   onSave: () => void;
@@ -25,7 +26,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={onSave}
           disabled={isLoading}
           className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white disabled:opacity-50"
-          title="Save (Ctrl+S)"
+          title={`Save (${formatShortcut('Ctrl+S')})`}
         >
           💾
         </button>
@@ -33,7 +34,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         <button
           onClick={onFormat}
           className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white"
-          title="Format Document (Shift+Alt+F)"
+          title={`Format Document (${formatShortcut('Shift+Alt+F')})`}
         >
           🔄
         </button>

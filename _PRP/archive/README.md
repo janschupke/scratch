@@ -29,6 +29,14 @@ archive/
 ├── PRP-2025-07-11-02-Universal-File-Support.md
 ├── PRP-2025-07-11-03-Desktop-Menu-System.md
 ├── PRP-2025-07-11-04-Keyboard-Shortcuts.md
+├── PRP-2025-01-27-01-Fix-Folder-Opening-Error.md
+├── PRP-2025-01-27-02-Create-Comprehensive-Test-Suite.md
+├── PRP-2025-01-27-03-Fix-Cmd-Q-on-Mac.md
+├── PRP-2025-01-27-04-Update-Hotkey-Notation.md
+├── PRP-2025-01-27-05-Add-Status-Bar.md
+├── PRP-2025-01-27-06-Add-Find-Replace-Interface.md
+├── PRP-2025-01-27-07-Remove-Irrelevant-Menu-Items.md
+├── PRP-2025-01-27-08-Connect-Menu-Actions.md
 ```
 
 ## Naming Convention
@@ -140,6 +148,62 @@ This ensures files sort chronologically in the filesystem and provide clear trac
 - Tested keyboard navigation and accessibility.
 - Maintained >80% test coverage and verified all tests pass.
 
+### Phase 14: Fix Folder Opening Error (PRP-2025-01-27-01)
+**Critical Bugfix: Folder Opening Reliability**
+- Fixed React error #310 when opening folders, which previously blocked all file editing functionality.
+- Refactored file store for atomic state updates, robust error handling, and request cancellation.
+- Ensured proper async state management and cleanup in FolderTree and useFileWatcher.
+- Added comprehensive tests for folder opening, error cases, and cancellation.
+- Maintained >80% test coverage and verified all tests pass.
+
+### Phase 15: Create Comprehensive Test Suite (PRP-2025-01-27-02)
+**Testing Foundation: File Store and Folder Operations**
+- Implemented a comprehensive test suite for the file store, covering folder opening, file tree loading, file opening, tab management, and error handling.
+- Used dependency injection for file system and file detection utilities to enable robust mocking.
+- Added async state polling helper to ensure reliable test assertions for Zustand store updates.
+- Achieved and maintained >80% test coverage, with all tests passing.
+
+### Phase 16: Fix Cmd+Q on Mac (PRP-2025-01-27-03)
+**Critical Platform Compliance: Cmd+Q Behavior on macOS**
+- Prevented the app from hijacking Cmd+Q on macOS, allowing the OS to handle quit as per platform conventions.
+- Added platform detection to avoid registering Cmd+Q as an app shortcut on Mac, but allow it on other platforms if desired.
+- Ensured menu “Exit” action and programmatic quit still work as expected.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
+### Phase 17: Update Hotkey Notation (PRP-2025-01-27-04)
+**Platform-Specific Shortcut Display**
+- Implemented platform detection and shortcut formatting utility.
+- Updated all menu, toolbar, and tooltip shortcut displays to show Cmd on Mac and Ctrl on Windows/Linux.
+- Ensured consistent, intuitive shortcut display throughout the UI.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
+### Phase 18: Add Status Bar (PRP-2025-01-27-05)
+**Editor Status Information Display**
+- Enhanced EditorStatusBar component with file size, selection information, and improved file path display.
+- Added real-time cursor position, selection length, and file encoding display.
+- Integrated status bar into Layout component to show contextual information during editing.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
+### Phase 19: Add Find/Replace Interface (PRP-2025-01-27-06)
+**Advanced Text Search and Replacement**
+- Created comprehensive FindReplace component with search, replace, and navigation functionality.
+- Integrated Monaco Editor search API with case-sensitive, regex, and whole-word options.
+- Added keyboard shortcuts (Cmd+F, Cmd+H) for quick access to find/replace functionality.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
+### Phase 20: Remove Irrelevant Menu Items (PRP-2025-01-27-07)
+**Menu System Cleanup**
+- Removed "Check for Updates" menu item from Help menu as it's not relevant to the application.
+- Cleaned up menu system to only include functional and appropriate menu items.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
+### Phase 21: Connect Menu Actions (PRP-2025-01-27-08)
+**Functional Menu System Implementation**
+- Connected all menu items to actual functionality including file operations, edit operations, and view controls.
+- Implemented save/save as with file dialogs, undo/redo with editor integration, and clipboard operations.
+- Added proper error handling and user feedback for all menu actions.
+- Maintained >80% test coverage and verified all tests and builds pass.
+
 ## Key Achievements
 
 ### Technical Excellence
@@ -173,6 +237,14 @@ This ensures files sort chronologically in the filesystem and provide clear trac
 - **Error Handling**: Some edge cases could be handled more gracefully
 - **Documentation**: Could include more user-facing documentation
 - **Testing**: Could add more E2E tests for complex workflows
+
+### Critical Bugfixes
+- **Critical Bugfixes**: Resolved folder opening errors and ensured robust async state management in the file store.
+- **Testing Foundation**: Established a comprehensive, reliable test suite for file and folder operations.
+
+### Async State Management
+- **Async State Management**: Zustand stores require careful async state polling in tests; helper utilities are essential for reliable assertions.
+- **Dependency Injection**: Enabling DI for stores and utilities greatly improves testability and reliability.
 
 ## Agent Update Instructions
 

@@ -14,20 +14,76 @@ PRP documents in this folder should follow the naming convention:
 - Each PRP should be comprehensive and self-contained
 - PRPs should be implemented in numerical order within the feature set
 
-## Example Structure
+## Current PRPs (2025-01-27)
 
-```
-current/
-├── README.md                    # This file
-├── PRP-2024-01-15-01-Feature-Foundation.md
-├── PRP-2024-01-15-02-Basic-Implementation.md
-├── PRP-2024-01-15-03-Advanced-Features.md
-└── ...
-```
+### Critical Issues (High Priority)
+
+1. **PRP-2025-01-27-01-Fix-Folder-Opening-Error.md**
+   - **Issue**: Users encounter React error #310 when trying to open folders
+   - **Impact**: Prevents any file editing functionality
+   - **Status**: Ready for implementation
+   - **Priority**: Critical - Must be fixed before other development
+
+2. **PRP-2025-01-27-02-Create-Comprehensive-Test-Suite.md**
+   - **Issue**: Need comprehensive testing to verify folder and file operations
+   - **Impact**: Ensures reliability and prevents regressions
+   - **Status**: Ready for implementation
+   - **Priority**: Critical - Must be implemented alongside folder opening fix
+
+3. **PRP-2025-01-27-03-Fix-Cmd-Q-on-Mac.md**
+   - **Issue**: Application hijacks Cmd+Q, preventing normal app quit
+   - **Impact**: Violates macOS user experience guidelines
+   - **Status**: Ready for implementation
+   - **Priority**: Critical - Affects basic application behavior
+
+4. **PRP-2025-01-27-04-Update-Hotkey-Notation.md**
+   - **Issue**: Shows "Ctrl + letter" instead of "Cmd + letter" on Mac
+   - **Impact**: Creates user confusion about keyboard shortcuts
+   - **Status**: Ready for implementation
+   - **Priority**: Critical - Affects user understanding of shortcuts
+
+### UI/UX Improvements (Medium Priority)
+
+5. **PRP-2025-01-27-05-Add-Status-Bar.md**
+   - **Feature**: Status bar showing file info, cursor position, encoding
+   - **Impact**: Provides important contextual information to users
+   - **Status**: Ready for implementation
+   - **Priority**: Medium - Enhances user experience
+
+6. **PRP-2025-01-27-06-Add-Find-Replace-Interface.md**
+   - **Feature**: Expandable find/replace UI with search options
+   - **Impact**: Essential editing functionality for productivity
+   - **Status**: Ready for implementation
+   - **Priority**: Medium - Enhances editing capabilities
+
+7. **PRP-2025-01-27-07-Remove-Irrelevant-Menu-Items.md**
+   - **Feature**: Remove "Check for Updates" and other irrelevant menu items
+   - **Impact**: Cleaner, more focused menu system
+   - **Status**: Ready for implementation
+   - **Priority**: Medium - Improves menu clarity
+
+8. **PRP-2025-01-27-08-Connect-Menu-Actions.md**
+   - **Feature**: Connect menu items to actual functionality
+   - **Impact**: Makes application fully functional and user-friendly
+   - **Status**: Ready for implementation
+   - **Priority**: Medium - Essential for complete functionality
+
+## Implementation Order
+
+**Recommended Implementation Sequence:**
+
+1. **PRP-01** (Fix Folder Opening Error) - Critical blocking issue
+2. **PRP-02** (Create Test Suite) - Implement alongside PRP-01
+3. **PRP-03** (Fix Cmd+Q) - Critical system behavior
+4. **PRP-04** (Update Hotkey Notation) - Critical user experience
+5. **PRP-05** (Add Status Bar) - UI enhancement
+6. **PRP-06** (Add Find/Replace) - Core editing functionality
+7. **PRP-07** (Remove Irrelevant Menu Items) - Menu cleanup
+8. **PRP-08** (Connect Menu Actions) - Complete functionality
 
 ## PRP Content Requirements
 
-Each PRP document should contain:
+Each PRP document contains:
 
 ### 1. Overview
 - Clear description of what will be implemented
@@ -118,5 +174,18 @@ Each PRP document should contain:
 - **Sequential Ordering**: Easy to follow implementation order
 - **Descriptive Names**: Clear identification of feature content
 - **Consistent Format**: Standardized naming across all PRPs
+
+## Success Metrics
+
+- **Code Quality**: >80% test coverage, no linting errors
+- **Performance**: <100ms component renders, optimized bundles
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Reliability**: <1% test flakiness, robust error handling
+- **Maintainability**: Clear documentation, consistent patterns
+- **Code Structure**: Logical organization, no duplication, proper abstraction
+- **Build Process**: Successful builds with no errors
+- **User Experience**: Intuitive interface, responsive design
+- **Completion**: All PRPs in 'current' folder implemented and archived
+- **Documentation**: Archive README.md updated with new completed features
 
 This folder should be empty when all features are complete, with all PRPs moved to the `archive/` folder. 

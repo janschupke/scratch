@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMenuStore } from '../stores/menuStore';
 import { MenuActions } from '../services/menuActions';
+import { formatShortcut } from '../utils/shortcutUtils';
 
 const menuConfig = [
   {
@@ -44,7 +45,6 @@ const menuConfig = [
       { label: 'About', action: MenuActions.about },
       { label: 'Documentation', action: MenuActions.documentation },
       { label: 'Keyboard Shortcuts', action: MenuActions.shortcuts },
-      { label: 'Check for Updates', action: MenuActions.checkForUpdates },
     ],
   },
 ];
@@ -83,7 +83,7 @@ export const MenuBar: React.FC = () => {
                       tabIndex={0}
                     >
                       <span>{item.label}</span>
-                      {item.shortcut && <span className="float-right text-xs text-gray-400">{item.shortcut}</span>}
+                      {item.shortcut && <span className="float-right text-xs text-gray-400">{formatShortcut(item.shortcut)}</span>}
                     </button>
                   </li>
                 ))}

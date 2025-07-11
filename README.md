@@ -37,7 +37,7 @@ npm install
 npm run dev
 
 # In another terminal, start Tauri dev (native window)
-npm run tauri dev
+npm run tauri:dev
 ```
 
 ### Running Tests
@@ -52,16 +52,16 @@ npm run test:run
 npm run build
 
 # Package the app for macOS (universal binary)
-npm run tauri build
+npm run tauri:build
 
 # For specific architectures:
-npm run tauri build:mac-universal
-npm run tauri build:mac-arm64
-npm run tauri build:mac-x64
+npm run tauri:build:mac
+npm run tauri:build:mac:arm64
+npm run tauri:build:mac:x64
 ```
 
 **Built Application Location:**
-After running `npm run tauri build`, the macOS app bundle is located at:
+After running `npm run tauri:build`, the macOS app bundle is located at:
 ```
 src-tauri/target/release/bundle/macos/Scratch.app
 ```

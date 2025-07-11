@@ -115,6 +115,16 @@ export class ShortcutActions {
     
     await invoke('close_window');
   }
+ 
+  static find() {
+    // TODO: Implement find functionality
+    console.log('Find shortcut triggered');
+  }
+ 
+  static replace() {
+    // TODO: Implement replace functionality
+    console.log('Replace shortcut triggered');
+  }
 
   // Navigation Operations
   static switchToTab(tabIndex: number) {

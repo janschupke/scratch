@@ -3,6 +3,9 @@ import { useShortcutStore } from '../stores/shortcutStore';
 import { ShortcutActions } from '../services/shortcutActions';
 import { useTabStore } from '../stores/tabStore';
 
+// Platform detection utility
+const isMac = typeof navigator !== 'undefined' && /Mac/.test(navigator.platform);
+
 export const useShortcuts = () => {
   const { registerShortcut, unregisterShortcut } = useShortcutStore();
   const { activeTabId } = useTabStore();
@@ -78,7 +81,8 @@ export const useShortcuts = () => {
         enabled: hasActiveTab,
         visible: true
       },
-      {
+      // Only register Cmd+Q exit shortcut if not on Mac
+      ...(!isMac ? [{
         id: 'exit',
         key: 'Cmd+Q',
         description: 'Exit application',
@@ -86,7 +90,7 @@ export const useShortcuts = () => {
         action: () => ShortcutActions.exit(),
         enabled: true,
         visible: true
-      },
+      }] : []),
 
       // Edit Operations
       {
@@ -140,6 +144,24 @@ export const useShortcuts = () => {
         description: 'Select all',
         category: 'edit' as const,
         action: () => ShortcutActions.selectAll(),
+        enabled: hasActiveTab,
+        visible: true
+      },
+      {
+        id: 'find',
+        key: 'Cmd+F',
+        description: 'Find',
+        category: 'edit' as const,
+        action: () => ShortcutActions.find(),
+        enabled: hasActiveTab,
+        visible: true
+      },
+      {
+        id: 'replace',
+        key: 'Cmd+H',
+        description: 'Replace',
+        category: 'edit' as const,
+        action: () => ShortcutActions.replace(),
         enabled: hasActiveTab,
         visible: true
       },

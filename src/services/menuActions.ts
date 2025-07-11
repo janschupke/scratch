@@ -3,6 +3,8 @@ import { appWindow } from '@tauri-apps/api/window';
 import { useFileStore } from '../stores/fileStore';
 import { useTabStore } from '../stores/tabStore';
 import { useMenuStore } from '../stores/menuStore';
+import { useEditorStore } from '../stores/editorStore';
+import { useAppStore } from '../stores/appStore';
 
 export class MenuActions {
   static async newFile() {
@@ -38,7 +40,7 @@ export class MenuActions {
         useMenuStore.getState().addRecentFile(selected as string);
       }
     } catch (error) {
-      // Handle error
+      console.error('Failed to open file:', error);
     }
   }
 
@@ -46,87 +48,170 @@ export class MenuActions {
     try {
       const { openFolder } = useFileStore.getState();
       await openFolder();
-    } catch (error) {}
+    } catch (error) {
+      console.error('Failed to open folder:', error);
+    }
   }
 
   static async save() {
-    // Implement save logic via editor or file store
-    // Placeholder: not implemented
+    try {
+      const { activeTabId, tabs } = useTabStore.getState();
+      const activeTab = tabs.find(tab => tab.id === activeTabId);
+      
+      if (!activeTab || !activeTab.path) {
+        return this.saveAs();
+      }
+      
+      const { editorInstance } = useEditorStore.getState();
+      const content = editorInstance?.getValue() || '';
+      
+      await invoke('write_text_file', {
+        path: activeTab.path,
+        content
+      });
+      
+      // Update tab as saved
+      useTabStore.getState().markTabAsModified(activeTabId!, false);
+      console.log('File saved:', activeTab.path);
+    } catch (error) {
+      console.error('Failed to save file:', error);
+    }
   }
 
   static async saveAs() {
-    // Implement save as dialog and logic
-    // Placeholder: just call save for now
-    await this.save();
+    try {
+      const { activeTabId, tabs } = useTabStore.getState();
+      const activeTab = tabs.find(tab => tab.id === activeTabId);
+      const { editorInstance } = useEditorStore.getState();
+      const content = editorInstance?.getValue() || '';
+      
+      const savePath = await invoke('save_file_dialog', {
+        options: {
+          title: 'Save File As',
+          filters: [
+            { name: 'Text Files', extensions: ['txt', 'md', 'json', 'js', 'ts', 'html', 'css'] },
+            { name: 'All Files', extensions: ['*'] }
+          ]
+        }
+      });
+      
+      if (savePath) {
+        await invoke('write_text_file', {
+          path: savePath as string,
+          content
+        });
+        
+        // Update tab with new path
+        if (activeTab) {
+          useTabStore.getState().updateTabContent(activeTabId!, content);
+          useTabStore.getState().markTabAsModified(activeTabId!, false);
+        }
+        
+        console.log('File saved as:', savePath);
+      }
+    } catch (error) {
+      console.error('Failed to save file as:', error);
+    }
   }
 
   static async exit() {
-    await appWindow.close();
+    try {
+      const { tabs } = useTabStore.getState();
+      const hasUnsavedChanges = tabs.some(tab => tab.isModified);
+      
+      if (hasUnsavedChanges) {
+        const confirmed = await invoke('show_confirm_dialog', {
+          title: 'Unsaved Changes',
+          message: 'Do you want to save your changes before exiting?'
+        });
+        
+        if (confirmed) {
+          await this.save();
+        }
+      }
+      
+      await appWindow.close();
+    } catch (error) {
+      console.error('Failed to exit:', error);
+      await appWindow.close();
+    }
   }
 
   static async undo() {
-    // Implement undo via editor instance
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'undo', null);
+    }
   }
 
   static async redo() {
-    // Implement redo via editor instance
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'redo', null);
+    }
   }
 
   static async cut() {
-    // Implement cut via editor instance
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'cut', null);
+    }
   }
 
   static async copy() {
-    // Implement copy via editor instance
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'copy', null);
+    }
   }
 
   static async paste() {
-    // Implement paste via editor instance
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'paste', null);
+    }
   }
 
   static async find() {
-    // Implement find dialog
-    // Placeholder: not implemented
+    // TODO: Show find/replace panel
+    console.log('Find action triggered');
   }
 
   static async replace() {
-    // Implement replace dialog
-    // Placeholder: not implemented
+    // TODO: Show find/replace panel in replace mode
+    console.log('Replace action triggered');
   }
 
   static async selectAll() {
-    // Implement select all in editor
-    // Placeholder: not implemented
+    const { editorInstance } = useEditorStore.getState();
+    if (editorInstance) {
+      editorInstance.trigger('keyboard', 'selectAll', null);
+    }
   }
 
   static async toggleSidebar() {
-    // Implement sidebar toggle
-    // Placeholder: not implemented
+    const { isSidebarCollapsed } = useAppStore.getState();
+    useAppStore.getState().updateWindowState({ isSidebarCollapsed: !isSidebarCollapsed });
   }
 
   static async toggleStatusBar() {
-    // Implement status bar toggle
-    // Placeholder: not implemented
+    // TODO: Implement status bar toggle
+    console.log('Toggle status bar action triggered');
   }
 
   static async zoomIn() {
-    // Implement zoom in
-    // Placeholder: not implemented
+    // TODO: Implement zoom in functionality
+    console.log('Zoom in action triggered');
   }
 
   static async zoomOut() {
-    // Implement zoom out
-    // Placeholder: not implemented
+    // TODO: Implement zoom out functionality
+    console.log('Zoom out action triggered');
   }
 
   static async resetZoom() {
-    // Implement reset zoom
-    // Placeholder: not implemented
+    // TODO: Implement reset zoom functionality
+    console.log('Reset zoom action triggered');
   }
 
   static async fullScreen() {
@@ -135,22 +220,22 @@ export class MenuActions {
   }
 
   static async about() {
-    // Show about dialog
-    // Placeholder: not implemented
+    await invoke('show_message_dialog', {
+      title: 'About Scratch Editor',
+      message: 'Scratch Editor v1.0.0\nA modern, lightweight code editor built with React, TypeScript, and Tauri.'
+    });
   }
 
   static async documentation() {
-    // Open documentation URL
-    // Placeholder: not implemented
+    await invoke('open_url', {
+      url: 'https://github.com/your-repo/scratch-editor'
+    });
   }
 
   static async shortcuts() {
-    // Show keyboard shortcuts dialog
-    // Placeholder: not implemented
-  }
-
-  static async checkForUpdates() {
-    // Implement update check
-    // Placeholder: not implemented
+    await invoke('show_message_dialog', {
+      title: 'Keyboard Shortcuts',
+      message: 'Common shortcuts:\nCmd+N: New File\nCmd+O: Open File\nCmd+S: Save\nCmd+F: Find\nCmd+H: Replace\nCmd+Z: Undo\nCmd+Shift+Z: Redo'
+    });
   }
 } 

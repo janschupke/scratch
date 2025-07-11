@@ -4,6 +4,13 @@ import { FileNode } from '../types';
 import { Tab } from '../types/tabs';
 import { FileTypeDetector } from '../utils/fileDetection';
 
+interface FileStoreDeps {
+  fileSystem: typeof FileSystemManager.prototype;
+  fileTypeDetector: {
+    detectFileType: (path: string) => Promise<any>;
+  };
+}
+
 interface FileStore {
   currentFolder: string | null;
   fileTree: FileNode[];
@@ -11,6 +18,7 @@ interface FileStore {
   activeTabId: string | null;
   isLoading: boolean;
   error: string | null;
+  isOpeningFolder: boolean;
 
   // Actions
   openFolder: () => Promise<void>;
@@ -21,49 +29,70 @@ interface FileStore {
   clearError: () => void;
 }
 
-export const useFileStore = create<FileStore>((set, get) => {
-  const fileSystem = FileSystemManager.getInstance();
-
-  return {
+export function createFileStore({ fileSystem, fileTypeDetector }: FileStoreDeps) {
+  let currentFolderRequest: AbortController | null = null;
+  return create<FileStore>((set, get) => ({
     currentFolder: null,
     fileTree: [],
     openTabs: [],
     activeTabId: null,
     isLoading: false,
     error: null,
+    isOpeningFolder: false,
 
     openFolder: async () => {
-      set({ isLoading: true, error: null });
-      
+      if (currentFolderRequest) {
+        currentFolderRequest.abort();
+      }
+      const abortController = new AbortController();
+      currentFolderRequest = abortController;
+      set({ isLoading: true, error: null, isOpeningFolder: true });
       try {
         const folderPath = await fileSystem.selectFolder();
+        if (abortController.signal.aborted) return;
+        set({ isOpeningFolder: false }); // Folder selection is done
         if (folderPath) {
           set({ currentFolder: folderPath });
           await get().loadFileTree(folderPath);
         }
-      } catch (error) {
-        set({ error: `Failed to open folder: ${error}` });
+      } catch (error: any) {
+        if (!abortController.signal.aborted) {
+          set({ error: `Failed to open folder: ${error.message || error}` });
+          set({ isOpeningFolder: false });
+        }
       } finally {
-        set({ isLoading: false });
+        if (!abortController.signal.aborted) {
+          set({ isLoading: false });
+        }
+        currentFolderRequest = null;
       }
     },
 
     loadFileTree: async (path: string) => {
+      if (currentFolderRequest) {
+        currentFolderRequest.abort();
+      }
+      const abortController = new AbortController();
+      currentFolderRequest = abortController;
       set({ isLoading: true, error: null });
-      
       try {
         const nodes = await fileSystem.readDirectory(path);
+        if (abortController.signal.aborted) return;
         set({ fileTree: nodes });
-      } catch (error) {
-        set({ error: `Failed to load file tree: ${error}` });
+      } catch (error: any) {
+        if (!abortController.signal.aborted) {
+          set({ error: `Failed to load file tree: ${error.message || error}` });
+        }
       } finally {
-        set({ isLoading: false });
+        if (!abortController.signal.aborted) {
+          set({ isLoading: false });
+        }
+        currentFolderRequest = null;
       }
     },
 
     openFile: async (path: string) => {
       const { openTabs } = get();
-      // Check if file is already open
       const existingTab = openTabs.find(tab => tab.path === path);
       if (existingTab) {
         get().setActiveTab(existingTab.id);
@@ -71,13 +100,11 @@ export const useFileStore = create<FileStore>((set, get) => {
       }
       set({ isLoading: true, error: null });
       try {
-        // Universal file detection
-        const fileInfo = await FileTypeDetector.detectFileType(path);
+        const fileInfo = await fileTypeDetector.detectFileType(path);
         if (!fileInfo.isText) {
           set({ error: 'Cannot open binary or unsupported file type.' });
           return;
         }
-        // Read file content with encoding
         let content = '';
         if (fileInfo.encoding === 'utf-8' || fileInfo.encoding === 'ascii') {
           const { readTextFile } = await import('@tauri-apps/api/fs');
@@ -93,7 +120,7 @@ export const useFileStore = create<FileStore>((set, get) => {
         const fileName = fileInfo.name;
         const language = fileName.split('.').pop() || 'plaintext';
         const newTab: Tab = {
-          id: `tab-${Date.now()}`,
+          id: `tab-${Date.now()}-${Math.random()}`,
           title: fileName,
           path,
           isActive: true,
@@ -104,13 +131,9 @@ export const useFileStore = create<FileStore>((set, get) => {
           content
         };
         const updatedTabs = [...openTabs, newTab];
-        set({ 
-          openTabs: updatedTabs,
-          activeTabId: newTab.id,
-          isLoading: false 
-        });
+        set({ openTabs: updatedTabs, activeTabId: newTab.id, isLoading: false });
       } catch (error: any) {
-        set({ error: `Failed to open file: ${error.message}` });
+        set({ error: `Failed to open file: ${error.message || error}` });
       } finally {
         set({ isLoading: false });
       }
@@ -119,16 +142,11 @@ export const useFileStore = create<FileStore>((set, get) => {
     closeTab: (tabId: string) => {
       const { openTabs, activeTabId } = get();
       const updatedTabs = openTabs.filter(tab => tab.id !== tabId);
-      
       let newActiveTabId = activeTabId;
       if (activeTabId === tabId) {
         newActiveTabId = updatedTabs.length > 0 ? updatedTabs[0].id : null;
       }
-
-      set({ 
-        openTabs: updatedTabs,
-        activeTabId: newActiveTabId
-      });
+      set({ openTabs: updatedTabs, activeTabId: newActiveTabId });
     },
 
     setActiveTab: (tabId: string) => {
@@ -138,5 +156,11 @@ export const useFileStore = create<FileStore>((set, get) => {
     clearError: () => {
       set({ error: null });
     }
-  };
+  }));
+}
+
+// Default store instance for app use
+export const useFileStore = createFileStore({
+  fileSystem: FileSystemManager.getInstance(),
+  fileTypeDetector: FileTypeDetector
 }); 
