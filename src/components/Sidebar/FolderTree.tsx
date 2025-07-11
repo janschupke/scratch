@@ -2,21 +2,16 @@ import React from 'react';
 import { FileNode } from '../../types';
 import { useFileStore } from '../../stores/fileStore';
 import { FileSystemManager } from '../../utils/fileSystem';
+import { FileTypeDetector } from '../../utils/fileDetection';
 
 interface FolderTreeProps {
   nodes?: FileNode[];
   level?: number;
 }
 
-export const FolderTree: React.FC<FolderTreeProps> = ({ 
-  nodes, 
-  level = 0 
-}) => {
-  const { fileTree, openFile } = useFileStore();
+export const FolderTree: React.FC<FolderTreeProps> = () => {
+  const { fileTree, openFile, error } = useFileStore();
   const [expandedNodes, setExpandedNodes] = React.useState<Set<string>>(new Set());
-  const [loadingNodes, setLoadingNodes] = React.useState<Set<string>>(new Set());
-
-  const displayNodes = nodes || fileTree;
 
   const toggleNode = async (node: FileNode) => {
     if (node.type !== 'folder') {
@@ -34,19 +29,12 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
     } else {
       // Load children if not already loaded
       if (!node.children || node.children.length === 0) {
-        setLoadingNodes(prev => new Set(prev).add(node.id));
         try {
           const fileSystem = FileSystemManager.getInstance();
           const children = await fileSystem.readDirectory(node.path);
           node.children = children;
         } catch (error) {
           console.error('Error loading folder contents:', error);
-        } finally {
-          setLoadingNodes(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(node.id);
-            return newSet;
-          });
         }
       }
       newExpanded.add(node.id);
@@ -55,51 +43,39 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
   };
 
   const renderNode = (node: FileNode) => {
-    const isExpanded = expandedNodes.has(node.id);
-    const isLoading = loadingNodes.has(node.id);
-    const hasChildren = node.children && node.children.length > 0;
-
+    const isFile = node.type === 'file';
+    const [fileInfo, setFileInfo] = React.useState<any>(null);
+    React.useEffect(() => {
+      if (isFile) {
+        FileTypeDetector.detectFileType(node.path).then(setFileInfo).catch(() => setFileInfo(null));
+      }
+    }, [node.path]);
     return (
-      <div key={node.id}>
-        <div
-          className={`flex items-center px-2 py-1 hover:bg-gray-700 cursor-pointer ${
-            level > 0 ? 'ml-4' : ''
-          }`}
-          style={{ paddingLeft: `${level * 16 + 8}px` }}
-          onClick={() => toggleNode(node)}
-        >
-          {hasChildren && (
-            <div className="p-1">
-              {isLoading ? (
-                <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
-              ) : isExpanded ? (
-                <span className="text-gray-400">▼</span>
-              ) : (
-                <span className="text-gray-400">▶</span>
-              )}
-            </div>
-          )}
-          {!hasChildren && <div className="w-5" />}
-          
-          {node.type === 'folder' ? (
-            <span className="text-blue-400 mr-2">📁</span>
-          ) : (
-            <span className="text-gray-400 mr-2">📄</span>
-          )}
-          
-          <span className="text-sm text-gray-300 truncate">{node.name}</span>
-        </div>
-        
-        {isExpanded && hasChildren && (
-          <FolderTree nodes={node.children} level={level + 1} />
+      <div key={node.id} className="flex items-center px-2 py-1 cursor-pointer group hover:bg-vscode-accent/10">
+        {isFile ? (
+          <>
+            <span
+              className={`flex-1 truncate ${fileInfo && !fileInfo.isText ? 'text-gray-400' : ''}`}
+              title={fileInfo && !fileInfo.isText ? 'Binary file - cannot open' : node.name}
+              onClick={() => fileInfo && fileInfo.isText && openFile(node.path)}
+            >
+              {node.name}
+            </span>
+            {fileInfo && !fileInfo.isText && (
+              <span className="ml-2 px-2 py-0.5 bg-gray-500 text-white text-xs rounded">Binary</span>
+            )}
+          </>
+        ) : (
+          <span className="flex-1 truncate" onClick={() => toggleNode(node)}>{node.name}</span>
         )}
       </div>
     );
   };
 
   return (
-    <div className="py-2">
-      {displayNodes.map(renderNode)}
+    <div className="folder-tree">
+      {error && <div className="text-red-600 p-2">{error}</div>}
+      {fileTree.map(renderNode)}
     </div>
   );
 }; 

@@ -4,6 +4,9 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoadingScreen } from './components/LoadingScreen';
 import { useAppStore } from './stores/appStore';
 import { useFileStore } from './stores/fileStore';
+import { MenuBar } from './components/MenuBar';
+import { useShortcuts } from './hooks/useShortcuts';
+import { ShortcutManager } from './services/shortcutManager';
 
 function App() {
   const { 
@@ -21,8 +24,19 @@ function App() {
     clearError
   } = useFileStore();
 
+  // Initialize shortcuts
+  useShortcuts();
+
   useEffect(() => {
     initializeApp();
+    
+    // Start shortcut manager
+    const shortcutManager = ShortcutManager.getInstance();
+    shortcutManager.start();
+    
+    return () => {
+      shortcutManager.stop();
+    };
   }, [initializeApp]);
 
   useEffect(() => {
@@ -46,6 +60,7 @@ function App() {
   return (
     <ErrorBoundary>
       <div className={`h-screen ${preferences.theme === 'dark' ? 'dark' : ''}`}>
+        <MenuBar />
         <Layout
           sidebarWidth={sidebarWidth}
           isSidebarCollapsed={isSidebarCollapsed}

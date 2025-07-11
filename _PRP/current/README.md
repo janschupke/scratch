@@ -73,18 +73,43 @@ Each PRP document should contain:
 1. **Read README.md and INIT.md** from the parent folder
 2. **Implement PRPs in numerical order** (01, 02, 03, etc.)
 3. **Run tests after each PRP** with `npm run test:run`
-4. **Move completed PRPs to archive** when implementation is complete
-5. **Update archive README.md** with new completed features
-6. **Continue until all PRPs are implemented**
+4. **Build the app** with `npm run tauri build` and fix any errors
+5. **Refactor code** if needed to maintain logical structure
+6. **Move completed PRPs to archive** when implementation is complete
+7. **Update archive README.md** with new completed features
+8. **Continue until all PRPs are implemented**
 
 ## Quality Standards
 
 - Maintain >80% test coverage
 - Ensure all tests pass before moving to next PRP
+- **ALWAYS** build the app successfully before marking PRP as completed
 - Follow established code patterns and conventions
+- Use enums, constants, and abstraction to avoid hardcoding
+- Maintain logical code structure and refactor when needed
 - Update documentation as needed
 - Verify no regressions in existing functionality
 - Update archive README.md when moving completed PRPs
+
+## Code Structure Requirements
+
+### Abstraction and Constants
+- Use enums for type-safe constants (e.g., `ShortcutCategory`, `FileType`)
+- Extract magic numbers and strings into named constants
+- Create utility functions for repeated business logic
+- Use proper TypeScript interfaces for type safety
+
+### File Organization
+- Maintain logical component hierarchy
+- Group related functionality in appropriate directories
+- Use consistent naming conventions across files
+- Refactor when new additions cause structural issues
+
+### Code Quality
+- Avoid duplication of business logic
+- Extract reusable patterns into shared utilities
+- Use proper abstraction layers for complex operations
+- Maintain clean, readable code structure
 
 ## Naming Convention Benefits
 

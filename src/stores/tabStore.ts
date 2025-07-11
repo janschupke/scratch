@@ -19,6 +19,7 @@ interface TabStore extends TabState {
   moveTabToGroup: (tabId: string, groupId: string) => void;
   closeTabGroup: (groupId: string) => void;
   setActiveGroupId: (groupId: string) => void;
+  updateEditorState: (tabId: string, editorState: any) => void;
 }
 
 export const useTabStore = create<TabStore>()(
@@ -219,6 +220,15 @@ export const useTabStore = create<TabStore>()(
 
       setActiveGroupId: (groupId) => {
         set({ activeGroupId: groupId });
+      },
+
+      updateEditorState: (tabId, editorState) => {
+        const { tabs } = get();
+        set({
+          tabs: tabs.map(tab =>
+            tab.id === tabId ? { ...tab, editorState } : tab
+          ),
+        });
       },
     }),
     {

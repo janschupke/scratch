@@ -66,6 +66,8 @@
 - **Accessibility**: WCAG 2.1 AA compliance, ARIA labels, keyboard navigation
 - **Performance**: <100ms component render times, optimized bundles
 - **Documentation**: Clear comments, README updates, inline docs
+- **Code Structure**: Logical organization, avoid duplication, use enums and constants
+- **Abstraction**: Extract reusable patterns, avoid hardcoding business logic
 
 ### Architecture Rules
 - **Design System**: Use centralized tokens, consistent patterns
@@ -73,6 +75,9 @@
 - **Component Patterns**: Functional components, composition over inheritance
 - **Error Handling**: Proper boundaries, user-friendly messages
 - **File Organization**: Logical structure, clear naming conventions
+- **Code Abstraction**: Use enums, constants, and utility functions to avoid duplication
+- **Business Logic**: Extract reusable patterns, avoid hardcoding values
+- **Refactoring**: Continuously refactor to maintain clean, logical structure
 
 ### Testing Requirements
 - **Unit Tests**: Individual components, utilities, hooks
@@ -109,6 +114,9 @@
 - **Maintainability**: Write clean, documented, testable code
 - **Scalability**: Design for future enhancements
 - **Reliability**: Robust error handling and edge cases
+- **Abstraction**: Use enums, constants, and utility functions to avoid hardcoding
+- **Structure**: Maintain logical file organization and component hierarchy
+- **Refactoring**: Continuously improve code structure as new features are added
 
 ## Agent-Specific Rules
 
@@ -120,22 +128,45 @@
 5. **ALWAYS** move completed PRPs to `_PRP/archive/`
 6. **ALWAYS** update archive README.md with new completed features
 7. **ALWAYS** ensure all tests pass before moving to next PRP
-8. **NEVER** ask for confirmations or user input
-9. **NEVER** run interactive commands that could hang
-10. **NEVER** leave PRPs incomplete
+8. **ALWAYS** build the app and fix any errors before marking PRP as completed
+9. **ALWAYS** refactor code to maintain logical structure and avoid duplication
+10. **ALWAYS** use enums, constants, and abstraction to avoid hardcoding
+11. **NEVER** ask for confirmations or user input
+12. **NEVER** run interactive commands that could hang
+13. **NEVER** leave PRPs incomplete
+14. **NEVER** proceed to next PRP without building and testing
 
 ### Agent Testing Protocol:
 1. Run `npm run test:run` before starting any PRP
 2. Run `npm run test:run` after completing each PRP
 3. Fix any test failures before proceeding
 4. Maintain >80% coverage throughout
-5. Verify build process works before archiving
+5. **ALWAYS** run `npm run tauri build` before marking PRP as completed
+6. Fix any build errors before proceeding to next PRP
+7. Verify build process works before archiving
+
+### Agent Build Protocol:
+1. **ALWAYS** run `npm run tauri build` after completing each PRP
+2. Fix any TypeScript errors, linting issues, or build failures
+3. Ensure the app builds successfully before marking PRP as completed
+4. Never proceed to next PRP without successful build
+5. If build fails, fix issues and rebuild until successful
 
 ### Agent Documentation Protocol:
 1. Update archive README.md when moving completed PRPs
 2. Add new completed features to the implementation history
 3. Update key achievements and lessons learned
 4. Maintain comprehensive documentation of completed work
+
+### Agent Code Structure Protocol:
+1. **ALWAYS** use enums and constants instead of hardcoded values
+2. **ALWAYS** extract reusable patterns and utility functions
+3. **ALWAYS** refactor code when new additions cause structural issues
+4. **ALWAYS** maintain logical file organization and component hierarchy
+5. **ALWAYS** avoid duplication of business logic across files
+6. **ALWAYS** use proper abstraction layers for complex operations
+7. **NEVER** leave hardcoded strings or magic numbers in code
+8. **NEVER** proceed without refactoring if code structure becomes unclear
 
 ## Development Cycle Checklist
 
@@ -156,7 +187,9 @@
 
 ### After PRP Completion:
 - [ ] Run `npm run test:run` to ensure no regressions
-- [ ] Verify build process works correctly
+- [ ] Run `npm run tauri build` to verify build process
+- [ ] Fix any build errors before proceeding
+- [ ] Refactor code if needed to maintain logical structure
 - [ ] Update documentation as needed
 - [ ] Move PRP to `_PRP/archive/`
 - [ ] Update archive README.md with new completed features
@@ -167,7 +200,9 @@
 - [ ] All tests pass (>80% coverage)
 - [ ] No TypeScript errors
 - [ ] No linting warnings
-- [ ] Build completes successfully
+- [ ] Build completes successfully (`npm run tauri build`)
+- [ ] Code structure is logical and well-organized
+- [ ] No hardcoded values or duplicated business logic
 - [ ] Accessibility requirements met
 - [ ] Performance benchmarks achieved
 
@@ -194,6 +229,8 @@ _PRP/
 - **Accessibility**: WCAG 2.1 AA compliance
 - **Reliability**: <1% test flakiness, robust error handling
 - **Maintainability**: Clear documentation, consistent patterns
+- **Code Structure**: Logical organization, no duplication, proper abstraction
+- **Build Process**: Successful builds with no errors
 - **User Experience**: Intuitive interface, responsive design
 - **Completion**: All PRPs in 'current' folder implemented and archived
 - **Documentation**: Archive README.md updated with new completed features

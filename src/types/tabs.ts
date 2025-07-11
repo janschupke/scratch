@@ -9,6 +9,7 @@ export interface Tab {
   lastAccessed: number;
   content?: string; // File content
   preview?: string; // First few lines of content
+  editorState?: any; // Editor state (cursor, scroll, selections, viewState)
 }
 
 export interface TabGroup {

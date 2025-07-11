@@ -110,27 +110,27 @@ _PRP/
 
 ### For PRP Generation:
 ```
-"Read README.md and INIT.md, then generate PRPs for the features in PLANNING.md. 
+Read README.md and INIT.md, then generate PRPs for the features in PLANNING.md. 
 Create detailed, well-researched PRP documents in the 'current' folder that contain 
 complete information about the features to be implemented, including functional requirements, 
 non-functional requirements, user-facing descriptions, technical details, code examples, 
 testing requirements, potential risks, and accessibility considerations. Use the naming 
-convention PRP-[YYYY]-[MM]-[DD]-[number]-[feature].md with today's date."
+convention PRP-[YYYY]-[MM]-[DD]-[number]-[feature].md with today's date.
 ```
 
 ### For Implementation:
 ```
-"Read README.md and INIT.md, then implement all PRPs in the current folder. 
+Read README.md and INIT.md, then implement all PRPs in the current folder. 
 Keep working until all PRPs are complete. Maintain >80% test coverage and ensure 
 all tests pass. Run tests with 'npm run test:run' only. Do not ask for confirmations 
 or run interactive commands. Move completed PRPs to archive when done and update 
-the archive README.md with new completed features."
+the archive README.md with new completed features.
 ```
 
 ### For Feature Planning:
 ```
-"Update PLANNING.md with the following user-facing feature descriptions: [describe features]. 
-Focus on what users will experience, not technical implementation details."
+Update PLANNING.md with the following user-facing feature descriptions: [describe features]. 
+Focus on what users will experience, not technical implementation details.
 ```
 
 ## PRP Naming Convention
