@@ -1,4 +1,4 @@
-**An experiment repo. It doesn't work**
+**An experiment repo. It doesn't work.**
 
 # Scratch Editor
 
