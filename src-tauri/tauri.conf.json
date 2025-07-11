@@ -1,0 +1,91 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devPath": "http://localhost:5173",
+    "distDir": "../dist",
+    "withGlobalTauri": false
+  },
+  "package": {
+    "productName": "Scratch",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "dialog": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": ["**"]
+      },
+      "path": {
+        "all": true
+      },
+      "window": {
+        "all": true
+      },
+      "app": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": ["app"],
+      "identifier": "com.scratch.dev",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [],
+      "externalBin": [],
+      "copyright": "",
+      "category": "DeveloperTool",
+      "shortDescription": "A lightweight code editor",
+      "longDescription": "A modern, lightweight code editor built with React and Tauri",
+      "deb": {
+        "depends": []
+      },
+      "macOS": {
+        "minimumSystemVersion": "10.13.0",
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "providerShortName": null,
+        "entitlements": null,
+        "hardenedRuntime": true
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "Scratch",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "center": true,
+        "decorations": true,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "skipTaskbar": false,
+        "visible": true,
+        "fileDropEnabled": true,
+        "label": "main"
+      }
+    ]
+  }
+}
